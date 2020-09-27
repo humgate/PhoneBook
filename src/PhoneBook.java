@@ -3,26 +3,50 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PhoneBook {
+    static String [][] phoneBook= new String [10][10];
+    static int recCount = 0;
 
     public static void main(String[] args) {
+
         //Добавить считывание ввода пользователя в цикле
         Scanner scanner = new Scanner(System.in);
-        String input;
+        String inputName = "";
+        String inputNumber = "";
         boolean isCorrectInput;
 
         /* Запрашиваем ввести ФИО */
         isCorrectInput = false;
         while (!isCorrectInput) {
-            input = scanner.nextLine(); //Считывает строку из System.in
-            isCorrectInput = checkName(input);
-            if (!isCorrectInput) System.out.println("Введите корректное имя!");
+            System.out.println("Введите ФИО. Три слова разделенные пробелами:");
+            inputName = scanner.nextLine(); //Считывает строку из System.in
+            isCorrectInput = checkName(inputName);
+            if (!isCorrectInput) System.out.println("ФИО введено некорректно. Введите корректные ФИО!");
         }
 
+        /* Запрашиваем ввести номер */
+        isCorrectInput = false;
+        while (!isCorrectInput) {
+            System.out.println("Введите номер, 11 цифр. ФорматК 8(XXX)-XXX-XX-XX. ");
+            inputNumber = scanner.nextLine(); //Считывает строку из System.in
+            isCorrectInput = checkPhoneNumber(inputNumber);
+            if (!isCorrectInput) System.out.println("Номер введен некорректно. Повторите ввод!");
+        }
+
+        add(phoneBook, inputName, inputNumber);
 
     }
 
     public static boolean checkPhoneNumber(String phoneNumber) {
-        return true;
+        boolean result;
+        Pattern pattern = Pattern.compile(
+                "\\+?\\d\\(?\\d{3}\\)?" + // +7(903) или +8903 или +7903
+                        "[\\s-]?\\d{3}" + // "-000" или " 000"
+                        "[\\s-]?\\d{2}" + // "-00" или " 00"
+                        "[\\s-]?\\d{2}" //"-00" или " 00"
+        );
+        Matcher matcher = pattern.matcher(phoneNumber);
+        result = matcher.matches();
+        return result;
     }
 
     public static boolean checkName(String name) {
@@ -56,7 +80,6 @@ public class PhoneBook {
         );
         Matcher matcher = pattern.matcher(name);
         result = matcher.matches();
-        System.out.println(result);
 
         /* если проверять только одно условие, что должно быть три подстроки разделенных пробелами то можно так,
         как описано ниже. Очевидно что мощь и наглядность испольщованя регулярных выражений
@@ -77,9 +100,19 @@ public class PhoneBook {
 
     public static void add(String[][] book, String name, String number) {
         //add logic
+        if (recCount < 10) {
+            recCount++;
+            book[recCount][0] = name;
+            book[recCount][1] = number;
+            System.out.println("Запись успешно добавлена");
+        } else {
+            System.out.println("Превышено максмальное количество записей справочника. Новая запись не добавлена!");
+        }
+
     }
 
     public static void list(String[][] book) {
         //print phone book
     }
+
 }
